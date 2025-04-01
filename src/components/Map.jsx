@@ -1,9 +1,6 @@
 import "../App.css";
 import { GoogleMap, useJsApiLoader, MarkerF, InfoWindow} from "@react-google-maps/api";
 import React, { useState, useEffect } from 'react';
-import customMarker from "../components/marker2.png";
-
-let name = " ";
 
 const containerStyle = {
   width: '600px',
@@ -16,42 +13,35 @@ const center = {
 };
 
 function MyComponent() {
-  const [latitudes, setLatitudes] = useState([]);
-  const [longitudes, setLongitudes] = useState([]);
-  const [infoWindowPosition, setInfoWindowPosition] = useState(null);
+  const [markers, setMarkers] = useState([]);
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: ""
+    googleMapsApiKey: "AIzaSyDoyto6w4IlV12ZSKLW0Bw-ULWg4kpy4iM"
   })
 
   const [map, setMap] = React.useState(null);
 
   useEffect(() => {
-    getCoordsAirtable(setLatitudes, setLongitudes);
+    const interval = setInterval(() => {
+      getCoordsAirtable(setMarkers);
+    }, 100);
+  
+    return () => clearInterval(interval); 
   }, []);
-
-  const MarkerFactory = (lat, lng) => {
-    return {lat, lng}
-  }
-
-  const Markers = [
-    ...latitudes.map((lat, i) => MarkerFactory(lat, longitudes[i]))
-  ];
+  
 
   const onLoad = React.useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds(center);
-    map.fitBounds(bounds);
-
-    setMap(map)
-  }, [])
+    setMap(map);
+  }, []);
 
   const onUnmount = React.useCallback(function callback(map) {
-    setMap(null)
-  }, [])
+    setMap(null);
+  }, []);
 
-  const handleMarkerClick = (position) => {
-    setInfoWindowPosition(position);
+  const handleMarkerClick = (marker) => {
+    setSelectedMarker(marker);
   };
 
   //Getting Airtable records code
@@ -61,68 +51,55 @@ function getCoordsAirtable() {
 
 
   base('Data').select({
-      maxRecords: 25,
-      view: "Grid view"
+    maxRecords: 25,
+    view: "Grid view"
   }).eachPage(function page(records, fetchNextPage) {
-      // This function (`page`) will get called for each page of records.
+    const markerData = records.map((record) => ({
+      lat: parseFloat(record.get('Lat')),
+      lng: parseFloat(record.get('Lng')),
+      name: record.get('Name'),
+    }));
+    setMarkers(markerData);
 
-      let latitudes = [];
-      let longitudes = [];
-
-  records.forEach(function(record) {
-      latitudes.push(parseFloat(record.get('Latitude')));
-      longitudes.push(parseFloat(record.get('Longitude')));
-      name = record.get('Name');
-  });
-
-  setLatitudes(latitudes);
-  setLongitudes(longitudes);
-
-
-  // To fetch the next page of records, call `fetchNextPage`.
-  // If there are more records, `page` will get called again.
-  // If there are no more records, `done` will get called.
-  fetchNextPage();
-
+    fetchNextPage();
   }, function done(err) {
-      if (err) { console.error(err); return; }
-      //addEvent();
-
+    if (err) {
+      console.error(err);
+    }
   });
-  
 }
   return isLoaded ? (
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={6}
+        zoom={14}
         onLoad={onLoad}
         onUnmount={onUnmount}
       >
         { /* Child components, such as markers, info windows, etc. */ }
         <MarkerF />
-        {Markers.map((marker, i) => (
+        {markers.map((marker, i) => (
           <MarkerF 
-            key={i} 
+            key={i}
             position={{lat: marker.lat, lng: marker.lng}}
             options={{
-              icon: customMarker, 
+              icon: "marker2.png", 
             }}
-            onClick={() => handleMarkerClick({ lat: marker.lat, lng: marker.lng })}
+            onClick={() => handleMarkerClick(marker)}
             
           />   
         ))}
 
-      {infoWindowPosition && (
-        <InfoWindow position={infoWindowPosition} onCloseClick={() => setInfoWindowPosition(null)}>
-          <div>{name}</div>
+      {selectedMarker && (
+        <InfoWindow
+          position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
+          onCloseClick={() => setSelectedMarker(null)}
+        >
+          <div className="flex items-center justify-center font-bold text-md">{selectedMarker.name}</div>
         </InfoWindow>
       )}
-        
-        <>
-        </>
-      </GoogleMap>
-  ) : <></>
+    </GoogleMap>
+  ) : <></>;
 }
 
 export default React.memo(MyComponent)

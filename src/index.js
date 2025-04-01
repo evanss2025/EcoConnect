@@ -9,10 +9,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path="events" element={<Events />} />
-
-
-          
+          <Route index element={<Events />} />
         </Route>
       </Routes>
     </BrowserRouter>
