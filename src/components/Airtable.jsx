@@ -15,8 +15,8 @@ export const AirtableProvider = ({ children }) => {
   
   // Initialize Airtable base
   const base = new Airtable({
-    apiKey: ''
-  }).base('');
+    apiKey: process.env.REACT_APP_AIRTABLE_API_KEY
+  }).base('appjMaG4kkysB4JLI');
   
   // Function to fetch records from Airtable (runs on component mount)
   useEffect(() => {

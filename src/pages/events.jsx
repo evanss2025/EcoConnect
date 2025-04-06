@@ -86,7 +86,7 @@ function EventsContent() {
           <div id="heading">
             <h1 className='text-black text-3xl font-bold mt-2'>Nearby Cleanups</h1>
           </div>
-            <div id="markerContainer" className= 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 scroll-auto p-3 rounded-xl w-full md:h-[600px] lg:h-1/2 justify-center items-center overflow-y-scroll overflow-x-hidden'>
+            <div id="markerContainer" className= 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 scroll-auto p-3 rounded-xl w-full md:h-[600px] justify-center items-center overflow-y-scroll overflow-x-hidden'>
               {loading ? (
                 <p>Loading events...</p>
               ) : (

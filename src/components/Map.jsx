@@ -18,7 +18,7 @@ function MyComponent() {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: ""
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY
   })
 
   const [map, setMap] = React.useState(null);
@@ -47,7 +47,7 @@ function MyComponent() {
   //Getting Airtable records code
 function getCoordsAirtable() {
   var Airtable = require('airtable');
-  var base = new Airtable({apiKey: ''}).base('');
+  var base = new Airtable({apiKey: process.env.REACT_APP_AIRTABLE_API_KEY}).base('appjMaG4kkysB4JLI');
 
 
   base('Data').select({
