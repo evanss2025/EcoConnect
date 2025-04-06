@@ -18,7 +18,7 @@ function MyComponent() {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyDoyto6w4IlV12ZSKLW0Bw-ULWg4kpy4iM"
+    googleMapsApiKey: ""
   })
 
   const [map, setMap] = React.useState(null);
@@ -55,9 +55,9 @@ function getCoordsAirtable() {
     view: "Grid view"
   }).eachPage(function page(records, fetchNextPage) {
     const markerData = records.map((record) => ({
-      lat: parseFloat(record.get('Lat')),
-      lng: parseFloat(record.get('Lng')),
-      name: record.get('Name'),
+      lat: parseFloat(record.get('lat')),
+      lng: parseFloat(record.get('lng')),
+      name: record.get('name'),
     }));
     setMarkers(markerData);
 
@@ -95,7 +95,7 @@ function getCoordsAirtable() {
           position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
           onCloseClick={() => setSelectedMarker(null)}
         >
-          <div className="flex items-center justify-center font-bold text-md">{selectedMarker.name}</div>
+          <div className="flex px-2 items-center justify-center font-bold text-lg">{selectedMarker.name}</div>
         </InfoWindow>
       )}
     </GoogleMap>

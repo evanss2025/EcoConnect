@@ -15,8 +15,8 @@ export const AirtableProvider = ({ children }) => {
   
   // Initialize Airtable base
   const base = new Airtable({
-    apiKey: 'patA7l6ioAXtH6tVq.6379921665d2512b9a7db1f4ea8d335fac1f590a88ae0780205cc873d2967957'
-  }).base('appjMaG4kkysB4JLI');
+    apiKey: ''
+  }).base('');
   
   // Function to fetch records from Airtable (runs on component mount)
   useEffect(() => {
@@ -24,19 +24,18 @@ export const AirtableProvider = ({ children }) => {
     
     base('Data')
       .select({
-        maxRecords: 25,
+        maxRecords: 50,
         view: "Grid view"
       })
       .eachPage(
         function page(records, fetchNextPage) {
           const formattedRecords = records.map(record => ({
-            id: record.id,
-            name: record.get('Name'),
-            time: record.get('Time'),
-            address: record.get('Address'),
-            link: record.get('Link'),
-            lat: record.get('Lat'),
-            lng: record.get('Lng')
+            name: record.get('name'),
+            time: record.get('time'),
+            address: record.get('address'),
+            link: record.get('link'),
+            lat: record.get('lat'),
+            lng: record.get('lng')
           }));
           
           setRecords(currentRecords => [...currentRecords, ...formattedRecords]);
@@ -65,10 +64,10 @@ export const AirtableProvider = ({ children }) => {
       
       if (createdRecords && createdRecords.length > 0) {
         const newRecord = {
-          id: createdRecords[0].id,
-          name: createdRecords[0].fields.Name,
-          address: createdRecords[0].fields.Address,
-          link: createdRecords[0].fields.Link,
+          name: createdRecords[0].fields.name,
+          address: createdRecords[0].fields.address,
+          time: createdRecords[0].fields.time,
+          link: createdRecords[0].fields.link,
           lat: createdRecords[0].fields.Lat || 0,
           lng: createdRecords[0].fields.Lng || 0
         };
