@@ -82,9 +82,9 @@ function EventsContent() {
           />
         </div>
 
-        <div className='flex justify-center items-center flex-col w-full'>
+        <div className='flex justify-center items-center text-center flex-col w-full'>
           <div id="heading">
-            <h1 className='text-black text-3xl font-bold mt-2'>Nearby Cleanups</h1>
+            <h1 className='text-black text-2xl md:text-3xl font-bold mt-2 text-center'>Nearby Cleanups</h1>
           </div>
             <div id="markerContainer" className= 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 scroll-auto p-3 rounded-xl w-full md:h-[600px] justify-center items-center overflow-y-scroll overflow-x-hidden'>
               {loading ? (

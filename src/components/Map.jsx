@@ -8,11 +8,11 @@ const containerStyle = {
 };
 
 const center = {
-  lat: 42.3601,
-  lng: -71.0589
+  lat: 38.8899,
+  lng: -77.0091
 };
 
-function MyComponent() {
+function MyComponent({hoveredEventName}) {
   const [markers, setMarkers] = useState([]);
   const [selectedMarker, setSelectedMarker] = useState(null);
 
@@ -44,6 +44,10 @@ function MyComponent() {
     setSelectedMarker(marker);
   };
 
+  const handleHover = (marker) => {
+    setSelectedMarker(marker);
+  }
+
   //Getting Airtable records code
 function getCoordsAirtable() {
   var Airtable = require('airtable');
@@ -58,6 +62,7 @@ function getCoordsAirtable() {
       lat: parseFloat(record.get('lat')),
       lng: parseFloat(record.get('lng')),
       name: record.get('name'),
+      link: record.get('link'),
     }));
     setMarkers(markerData);
 
@@ -82,9 +87,12 @@ function getCoordsAirtable() {
           <MarkerF 
             key={i}
             position={{lat: marker.lat, lng: marker.lng}}
-            options={{
-              icon: "marker2.png", 
+            icon={{
+              url: hoveredEventName === marker.name ? "placeholder.png" : "pin.png",
+              scaledSize: new window.google.maps.Size(40, 40),
+              anchor: new window.google.maps.Point(20, 40),
             }}
+              
             onClick={() => handleMarkerClick(marker)}
             
           />   
@@ -95,7 +103,11 @@ function getCoordsAirtable() {
           position={{ lat: selectedMarker.lat, lng: selectedMarker.lng }}
           onCloseClick={() => setSelectedMarker(null)}
         >
-          <div className="flex px-2 items-center justify-center font-bold text-lg">{selectedMarker.name}</div>
+          <div className="flex px-2 items-center justify-center font-bold text-lg">
+            <a href= {selectedMarker.link} target="_blank"  className="w-full flex items-center justify-center underline">
+              {selectedMarker.name}
+            </a>
+          </div>
         </InfoWindow>
       )}
     </GoogleMap>
